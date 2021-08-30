@@ -1,0 +1,1 @@
+- More fine-tuned control over optional dependencies
