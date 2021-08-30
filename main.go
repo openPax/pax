@@ -5,10 +5,13 @@ import (
 	"os/user"
 	"path/filepath"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/innatical/alt/cmd"
 
 	"github.com/urfave/cli/v2"
 )
+
+var errorStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#FF0000"))
 
 func main() {
 	usr, err := user.Current()
@@ -90,7 +93,7 @@ func main() {
 	}
 	
 	if err := app.Run(os.Args); err != nil {
-		println(err.Error())
+		println(errorStyle.Render("Error: ") + err.Error())
 		os.Exit(1)
 	}
 }
