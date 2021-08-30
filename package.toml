@@ -1,0 +1,20 @@
+spec = 1
+
+[package]
+name = "alt"
+description = "The alt package manager"
+version = "1.0.0"
+authors = [
+  "Lleyton <lleyton@innatical.com>"
+]
+maintainers = [
+  "Lleyton <lleyton@innatical.com>"
+]
+
+[dependencies]
+optional = [
+  "apkg@^1.0.0"
+]
+
+[bin]
+alt = "./alt"
