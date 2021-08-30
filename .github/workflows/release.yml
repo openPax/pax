@@ -20,10 +20,10 @@ jobs:
       -
         name: Build Alt
         run: |
-          GOOS=darwin GOARCH=amd64 go build . -o alt-darwin-amd64
-          GOOS=darwin GOARCH=arm64 go build . -o alt-darwin-arm64
-          GOOS=linux GOARCH=amd64 go build . -o alt-linux-amd64
-          GOOS=linux GOARCH=arm64 go build . -o alt-linux-arm64
+          GOOS=darwin GOARCH=amd64 go build -o alt-darwin-amd64 .
+          GOOS=darwin GOARCH=arm64 go build -o alt-darwin-arm64 .
+          GOOS=linux GOARCH=amd64 go build -o alt-linux-amd64 .
+          GOOS=linux GOARCH=arm64 go build -o alt-linux-arm64 .
       -
         name: Package Alt
         run: |
