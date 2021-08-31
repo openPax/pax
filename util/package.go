@@ -388,12 +388,14 @@ func Upgrade(root, name string, sv bool) error {
 
 	chosen := versions[len(versions) - 1]
 
-	if err := Remove(root, name); err != nil {
-		return err
-	}
+	if chosen.String() != db.Packages[name].Package.Version {
+		if err := Remove(root, name); err != nil {
+			return err
+		}
 
-	if err := Install(root, name, chosen.String(), false); err != nil {
-		return err
+		if err := Install(root, name, chosen.String(), false); err != nil {
+			return err
+		}
 	}
 
 	for _, v := range db.Packages[name].Dependencies.Required {
