@@ -389,7 +389,7 @@ func Upgrade(root, name string, sv bool) error {
 	chosen := versions[len(versions) - 1]
 
 	if chosen.String() != db.Packages[name].Package.Version {
-		if err := Remove(root, name); err != nil {
+		if err := apkg.Remove(root, name); err != nil {
 			return err
 		}
 
