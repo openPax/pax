@@ -38,6 +38,10 @@ func ReadDatabase(root string) (*Database, error) {
 }
 
 func WriteDatabase(root string, db *Database) error {
+	if err := os.MkdirAll(root, 0755); err != nil {
+		return err
+	}
+
 	file, err := os.OpenFile(filepath.Join(root, "alt.toml"), os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
@@ -53,6 +57,10 @@ func WriteDatabase(root string, db *Database) error {
 }
 
 func LockDatabase(root string) error {
+	if err := os.MkdirAll(root, 0755); err != nil {
+		return err
+	}
+
 	_, err := os.Stat(filepath.Join(root, "alt.lock"))
 	if err == nil {
 		return &apkg.ErrorString{S: "Database already locked"}
