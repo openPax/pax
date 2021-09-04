@@ -3,7 +3,7 @@ spec = 1
 [package]
 name = "alt"
 description = "The alt package manager"
-version = "1.0.2"
+version = "1.0.3"
 authors = [
   "Lleyton <lleyton@innatical.com>"
 ]
