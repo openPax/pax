@@ -2,13 +2,15 @@ spec = 1
 
 [package]
 name = "alt"
-description = "The alt package manager"
+description = "The Alt Package Manager"
 version = "1.0.3"
 authors = [
   "Lleyton <lleyton@innatical.com>"
+  "Anise Star (Minor Edits) <anise@fivnex.co>"
 ]
 maintainers = [
   "Lleyton <lleyton@innatical.com>"
+  "Boop! Linux Team"
 ]
 
 [dependencies]
