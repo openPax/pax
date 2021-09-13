@@ -22,7 +22,7 @@ func main() {
 
 	app := &cli.App{
 		Name:      "alt",
-		Usage:     "The alt package manager",
+		Usage:     "Alt Package Manager",
 		UsageText: "alt [global options] command [command options] [arguments...]",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
