@@ -40,7 +40,7 @@ func Upgrade(c *cli.Context) error {
 	}
 
 	if len(packages) == 0 {
-		return &apkg.ErrorString{S: "No packages to upgrade"}
+		return &apkg.ErrorString{S: "No Packages to Upgrade"}
 	}
 
 	for _, v := range packages {

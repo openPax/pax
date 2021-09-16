@@ -30,7 +30,7 @@ func Install(c *cli.Context) error {
 		}
 
 		if installed {
-			return &apkg.ErrorString{S: "Package " + name + " already installed"}
+			return &apkg.ErrorString{S: "Package " + name + " Already Installed"}
 		}
 
 
