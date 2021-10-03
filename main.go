@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/innatical/alt/cmd"
+	"github.com/innatical/pax/cmd"
 
 	"github.com/urfave/cli/v2"
 )
@@ -21,9 +21,9 @@ func main() {
 	}
 
 	app := &cli.App{
-		Name:      "alt",
-		Usage:     "Alt Package Manager",
-		UsageText: "alt [global options] command [command options] [arguments...]",
+		Name:      "pax",
+		Usage:     "Pax Package Manager",
+		UsageText: "Pax [global options] command [command options] [arguments...]",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "root",
@@ -35,7 +35,7 @@ func main() {
 			{
 				Name:      "install",
 				Usage:     "Install a Package",
-				UsageText: "alt install <package names>",
+				UsageText: "pax install <package names>",
 				Aliases:   []string{"i"},
 				Action:    cmd.Install,
 				Flags: []cli.Flag{
@@ -49,7 +49,7 @@ func main() {
 			{
 				Name:      "remove",
 				Usage:     "Remove a Package",
-				UsageText: "alt remove <package names>",
+				UsageText: "pax remove <package names>",
 				Aliases:   []string{"r"},
 				Action:    cmd.Remove,
 			},

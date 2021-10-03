@@ -85,7 +85,7 @@ func Install(root string, name string, version string, installOptional bool) err
 		return err
 	}
 
-	f, err := os.CreateTemp(os.TempDir(), "alt")
+	f, err := os.CreateTemp(os.TempDir(), "pax")
 	if err != nil {
 		return err
 	}
