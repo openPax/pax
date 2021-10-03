@@ -22,10 +22,10 @@ jobs:
           GOOS=darwin GOARCH=amd64 go build -o pax-darwin-amd64 .
           GOOS=darwin GOARCH=arm64 go build -o pax-darwin-arm64 .
           GOOS=linux GOARCH=amd64 go build -o pax-linux-amd64 .
-          GOOS=linux GOARCH=arm64 go build -o pax-linux-aarch .
+          GOOS=linux GOARCH=arm64 go build -o pax-linux-arm64 .
       - name: Package Pax
         run: |
-          mkdir darwin-amd64 darwin-arm64 linux-amd64 linux-aarch
+          mkdir darwin-amd64 darwin-arm64 linux-amd64 linux-arm64
           cp package.toml darwin-amd64
           mv pax-darwin-amd64 darwin-amd64/pax
           cp package.toml darwin-arm64
