@@ -3,7 +3,7 @@ package cmd
 import (
 	"strings"
 
-	"github.com/innatical/alt/util"
+	"github.com/innatical/pax/util"
 	apkg "github.com/innatical/apkg/util"
 	"github.com/urfave/cli/v2"
 )
@@ -30,7 +30,7 @@ func Install(c *cli.Context) error {
 		}
 
 		if installed {
-			return &apkg.ErrorString{S: "Package " + name + " already installed"}
+			return &apkg.ErrorString{S: "Errno 1: Package " + name + " Already Installed"}
 		}
 
 

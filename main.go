@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/innatical/alt/cmd"
+	"github.com/innatical/pax/cmd"
 
 	"github.com/urfave/cli/v2"
 )
@@ -21,55 +21,55 @@ func main() {
 	}
 
 	app := &cli.App{
-		Name:      "alt",
-		Usage:     "Alt Package Manager",
-		UsageText: "alt [global options] command [command options] [arguments...]",
+		Name:      "pax",
+		Usage:     "Pax Package Manager",
+		UsageText: "Pax [global options] command [command options] [arguments...]",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "root",
 				Value: filepath.Join(usr.HomeDir, "/.apkg"),
-				Usage: "The root directory for the apkg package backend",
+				Usage: "The Root Directory for the apkg Package Backend",
 			},
 		},
 		Commands: []*cli.Command{
 			{
 				Name:      "install",
-				Usage:     "Install a package",
-				UsageText: "alt install <package names>",
+				Usage:     "Install a Package",
+				UsageText: "pax install <package names>",
 				Aliases:   []string{"i"},
 				Action:    cmd.Install,
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
 						Name:  "optional",
 						Value: true,
-						Usage: "Install optional dependencies",
+						Usage: "Install Optional Dependencies",
 					},
 				},
 			},
 			{
 				Name:      "remove",
-				Usage:     "Remove a package",
-				UsageText: "alt remove <package names>",
+				Usage:     "Remove a Package",
+				UsageText: "pax remove <package names>",
 				Aliases:   []string{"r"},
 				Action:    cmd.Remove,
 			},
 			{
 				Name:      "list",
-				Usage:     "List all installed packages",
+				Usage:     "List All Installed Packages",
 				UsageText: "apkg list",
 				Aliases:   []string{"l"},
 				Action:    cmd.List,
 			},
 			{
 				Name:      "search",
-				Usage:     "Search all packages",
+				Usage:     "Search All Packages",
 				UsageText: "apkg search",
 				Aliases:   []string{"s"},
 				Action:    cmd.Search,
 			},
 			{
 				Name:      "upgrade",
-				Usage:     "upgrade all packages",
+				Usage:     "Upgrade All Packages",
 				UsageText: "apkg upgrade [package names]",
 				Aliases:   []string{"u"},
 				Action:    cmd.Upgrade,
@@ -77,14 +77,14 @@ func main() {
 					&cli.BoolFlag{
 						Name:  "latest",
 						Value: false,
-						Usage: "Grab the latest compatible, self semver breaking packages",
+						Usage: "Grab the Latest Compatible, Self Semver Breaking Packages",
 						Aliases: []string{"L"},
 					},
 				},
 			},
 			{
 				Name:      "info",
-				Usage:     "Get the information for a package",
+				Usage:     "Get the Information for a Package",
 				UsageText: "apkg info <package file|package name>",
 				Aliases:   []string{"in"},
 				Action:    cmd.Info,

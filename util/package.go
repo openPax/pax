@@ -33,7 +33,7 @@ func Install(root string, name string, version string, installOptional bool) err
 	
 
 	if pkg == nil {
-		return &apkg.ErrorString{S: "Could not find package with name " + name}
+		return &apkg.ErrorString{S: "Errno 4: Could not find package with name " + name}
 	}
 
 	v := ""
@@ -66,7 +66,7 @@ func Install(root string, name string, version string, installOptional bool) err
 	
 
 	if v == "" {
-		return &apkg.ErrorString{S: "Could not find package " + name + " with version " + version}
+		return &apkg.ErrorString{S: "Errno 5: Could not find package " + name + " with version " + version}
 	}
 
 	installed, err := IsInstalled(root, name, v)
@@ -85,7 +85,7 @@ func Install(root string, name string, version string, installOptional bool) err
 		return err
 	}
 
-	f, err := os.CreateTemp(os.TempDir(), "alt")
+	f, err := os.CreateTemp(os.TempDir(), "pax")
 	if err != nil {
 		return err
 	}
@@ -162,7 +162,7 @@ func IsInstalled(root, name, constraint string) (bool, error) {
 	}
 
 	if !c.Check(v) {
-		return false, &apkg.ErrorString{S: "Package " + name  + " installed but does not match version constaint " + constraint}
+		return false, &apkg.ErrorString{S: "Errno 6: Package " + name  + " installed but does not match version constaint " + constraint}
 	}
 
 
@@ -358,7 +358,7 @@ func Upgrade(root, name string, sv bool) error {
 	
 
 	if pkg == nil {
-		return &apkg.ErrorString{S: "Could not find package with name " + name}
+		return &apkg.ErrorString{S: "Errno 4: Could not find package with name " + name}
 	}
 
 	var versions []*semver.Version
@@ -383,7 +383,7 @@ func Upgrade(root, name string, sv bool) error {
 	sort.Sort(semver.Collection(versions))
 
 	if len(versions) == 0 {
-		return &apkg.ErrorString{S: "Could not find latest version for package  " + name }
+		return &apkg.ErrorString{S: "Errno 7: Could not find latest version for package  " + name }
 	}
 
 	chosen := versions[len(versions) - 1]

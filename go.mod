@@ -1,4 +1,4 @@
-module github.com/innatical/alt
+module github.com/innatical/pax
 
 go 1.17
 

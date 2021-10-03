@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/innatical/alt/util"
+	"github.com/innatical/pax/util"
 	apkg "github.com/innatical/apkg/util"
 	"github.com/urfave/cli/v2"
 )
@@ -40,7 +40,7 @@ func Upgrade(c *cli.Context) error {
 	}
 
 	if len(packages) == 0 {
-		return &apkg.ErrorString{S: "No packages to upgrade"}
+		return &apkg.ErrorString{S: "Errno 3: No Packages to Upgrade"}
 	}
 
 	for _, v := range packages {

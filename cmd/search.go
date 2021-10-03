@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/innatical/alt/util"
+	"github.com/innatical/pax/util"
 	"github.com/urfave/cli/v2"
 )
 
