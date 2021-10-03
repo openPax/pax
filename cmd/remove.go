@@ -28,7 +28,7 @@ func Remove(c *cli.Context) error {
 		}
 
 		if len(dependents) > 0 {
-			return &apkg.ErrorString{S: "Package " + name + " Is Required By " +  strings.Join(dependents, ", ")}
+			return &apkg.ErrorString{S: "Errno 2: Package " + name + " Is Required By " +  strings.Join(dependents, ", ")}
 		}
 
 		if err := util.Remove(c.String("root"), name); err != nil {
