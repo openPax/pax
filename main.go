@@ -56,28 +56,28 @@ func main() {
 			{
 				Name:      "list",
 				Usage:     "List all installed packages",
-				UsageText: "apkg list",
+				UsageText: "alt list",
 				Aliases:   []string{"l"},
 				Action:    cmd.List,
 			},
 			{
 				Name:      "search",
 				Usage:     "Search all packages",
-				UsageText: "apkg search",
+				UsageText: "alt search",
 				Aliases:   []string{"s"},
 				Action:    cmd.Search,
 			},
 			{
 				Name:      "upgrade",
 				Usage:     "upgrade all packages",
-				UsageText: "apkg upgrade [package names]",
+				UsageText: "alt upgrade [package names]",
 				Aliases:   []string{"u"},
 				Action:    cmd.Upgrade,
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
-						Name:  "latest",
-						Value: false,
-						Usage: "Grab the latest compatible, self semver breaking packages",
+						Name:    "latest",
+						Value:   false,
+						Usage:   "Grab the latest compatible, self semver breaking packages",
 						Aliases: []string{"L"},
 					},
 				},
@@ -85,13 +85,38 @@ func main() {
 			{
 				Name:      "info",
 				Usage:     "Get the information for a package",
-				UsageText: "apkg info <package file|package name>",
+				UsageText: "alt info <package file|package name>",
 				Aliases:   []string{"in"},
 				Action:    cmd.Info,
 			},
+			{
+				Name:      "repo",
+				Usage:     "Manage Alt Repositories",
+				UsageText: "alt repo <subcomamnd>",
+				Aliases:   []string{"r"},
+				Subcommands: []*cli.Command{
+					// For Later
+					{
+						Name:      "import-key",
+						Usage:     "Import Alt Repository GPG Key",
+						UsageText: "alt repo import-key <keyfile>",
+						Action: func(c *cli.Context) error {
+							c.Args().First()
+							println("Test this command, alt repo imoprt-key")
+							return nil
+						},
+					},
+					{
+						Name:      "add",
+						Usage:     "Add new Alt Repository",
+						UsageText: "alt repo add <repository>",
+						Action:    cmd.Add,
+					},
+				},
+			},
 		},
 	}
-	
+
 	if err := app.Run(os.Args); err != nil {
 		println(errorStyle.Render("Error: ") + err.Error())
 		os.Exit(1)
