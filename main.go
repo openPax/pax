@@ -56,28 +56,28 @@ func main() {
 			{
 				Name:      "list",
 				Usage:     "List All Installed Packages",
-				UsageText: "apkg list",
+				UsageText: "pax list",
 				Aliases:   []string{"l"},
 				Action:    cmd.List,
 			},
 			{
 				Name:      "search",
 				Usage:     "Search All Packages",
-				UsageText: "apkg search",
+				UsageText: "pax search",
 				Aliases:   []string{"s"},
 				Action:    cmd.Search,
 			},
 			{
 				Name:      "upgrade",
 				Usage:     "Upgrade All Packages",
-				UsageText: "apkg upgrade [package names]",
+				UsageText: "pax upgrade [package names]",
 				Aliases:   []string{"u"},
 				Action:    cmd.Upgrade,
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
-						Name:  "latest",
-						Value: false,
-						Usage: "Grab the Latest Compatible, Self Semver Breaking Packages",
+						Name:    "latest",
+						Value:   false,
+						Usage:   "Grab the Latest Compatible, Self Semver Breaking Packages",
 						Aliases: []string{"L"},
 					},
 				},
@@ -85,13 +85,38 @@ func main() {
 			{
 				Name:      "info",
 				Usage:     "Get the Information for a Package",
-				UsageText: "apkg info <package file|package name>",
+				UsageText: "pax info <package file|package name>",
 				Aliases:   []string{"in"},
 				Action:    cmd.Info,
 			},
+			{
+				Name:      "repo",
+				Usage:     "Manage Pax Repositories",
+				UsageText: "pax repo <subcomamnd>",
+				Aliases:   []string{"r"},
+				Subcommands: []*cli.Command{
+					// For Later
+					// {
+					// 	Name:      "import-key",
+					// 	Usage:     "Import Alt Repository GPG Key",
+					// 	UsageText: "alt repo import-key <keyfile>",
+					// 	Action: func(c *cli.Context) error {
+					// 		c.Args().First()
+					// 		println("Test this command, alt repo imoprt-key")
+					// 		return nil
+					// 	},
+					// },
+					{
+						Name:      "add",
+						Usage:     "Add new Pax Repository",
+						UsageText: "pax repo add <repository>",
+						Action:    cmd.Add,
+					},
+				},
+			},
 		},
 	}
-	
+
 	if err := app.Run(os.Args); err != nil {
 		println(errorStyle.Render("Error: ") + err.Error())
 		os.Exit(1)

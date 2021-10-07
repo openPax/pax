@@ -12,6 +12,43 @@ import (
 	"github.com/Masterminds/semver"
 )
 
+func UpdateSourcesList(root string, source string) error {
+	println("Adding " + source + " to sources list")
+
+	if err := os.MkdirAll(root, 0755); err != nil {
+		return err
+	}
+
+	_, err := os.Stat(filepath.Join(root, "altsources.list"))
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		} else {
+			file, err := os.Create(filepath.Join(root, "altsources.list"))
+			if err != nil {
+				return err
+			}
+
+			file.Close()
+		}
+	}
+
+	file, err := os.OpenFile(filepath.Join(root, "altsources.list"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+
+	if err != nil {
+		return err
+	}
+
+	if _, err := file.WriteString(source); err != nil {
+		return err
+		//return &util.ErrorString{S: "Error Saving File"}
+	}
+
+	defer file.Close()
+
+	return nil
+}
+
 func ReadSourcesList(root string) ([]string, error) {
 	if err := os.MkdirAll(root, 0755); err != nil {
 		return nil, err
@@ -37,7 +74,6 @@ func ReadSourcesList(root string) ([]string, error) {
 		return nil, err
 	}
 
-	
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
