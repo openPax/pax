@@ -36,7 +36,7 @@ func main() {
 				Name:      "install",
 				Usage:     "Install a Package",
 				UsageText: "pax install <package names>",
-				Aliases:   []string{"i"},
+				Aliases:   []string{"i", "in"},
 				Action:    cmd.Install,
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
@@ -86,7 +86,6 @@ func main() {
 				Name:      "info",
 				Usage:     "Get the Information for a Package",
 				UsageText: "pax info <package file|package name>",
-				Aliases:   []string{"in"},
 				Action:    cmd.Info,
 			},
 			{
@@ -95,17 +94,6 @@ func main() {
 				UsageText: "pax repo <subcomamnd>",
 				Aliases:   []string{"r"},
 				Subcommands: []*cli.Command{
-					// For Later
-					// {
-					// 	Name:      "import-key",
-					// 	Usage:     "Import Alt Repository GPG Key",
-					// 	UsageText: "alt repo import-key <keyfile>",
-					// 	Action: func(c *cli.Context) error {
-					// 		c.Args().First()
-					// 		println("Test this command, alt repo imoprt-key")
-					// 		return nil
-					// 	},
-					// },
 					{
 						Name:      "add",
 						Usage:     "Add new Pax Repository",
