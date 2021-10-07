@@ -55,87 +55,61 @@ func main() {
 			},
 			{
 				Name:      "list",
-<<<<<<< HEAD
-				Usage:     "List all installed packages",
-				UsageText: "alt list",
-=======
 				Usage:     "List All Installed Packages",
-				UsageText: "apkg list",
->>>>>>> upstream
+				UsageText: "pax list",
 				Aliases:   []string{"l"},
 				Action:    cmd.List,
 			},
 			{
 				Name:      "search",
-<<<<<<< HEAD
-				Usage:     "Search all packages",
-				UsageText: "alt search",
-=======
 				Usage:     "Search All Packages",
-				UsageText: "apkg search",
->>>>>>> upstream
+				UsageText: "pax search",
 				Aliases:   []string{"s"},
 				Action:    cmd.Search,
 			},
 			{
 				Name:      "upgrade",
-<<<<<<< HEAD
-				Usage:     "upgrade all packages",
-				UsageText: "alt upgrade [package names]",
-=======
 				Usage:     "Upgrade All Packages",
-				UsageText: "apkg upgrade [package names]",
->>>>>>> upstream
+				UsageText: "pax upgrade [package names]",
 				Aliases:   []string{"u"},
 				Action:    cmd.Upgrade,
 				Flags: []cli.Flag{
 					&cli.BoolFlag{
-<<<<<<< HEAD
 						Name:    "latest",
 						Value:   false,
-						Usage:   "Grab the latest compatible, self semver breaking packages",
-=======
-						Name:  "latest",
-						Value: false,
-						Usage: "Grab the Latest Compatible, Self Semver Breaking Packages",
->>>>>>> upstream
+						Usage:   "Grab the Latest Compatible, Self Semver Breaking Packages",
 						Aliases: []string{"L"},
 					},
 				},
 			},
 			{
 				Name:      "info",
-<<<<<<< HEAD
-				Usage:     "Get the information for a package",
-				UsageText: "alt info <package file|package name>",
-=======
 				Usage:     "Get the Information for a Package",
-				UsageText: "apkg info <package file|package name>",
->>>>>>> upstream
+				UsageText: "pax info <package file|package name>",
 				Aliases:   []string{"in"},
 				Action:    cmd.Info,
 			},
 			{
 				Name:      "repo",
-				Usage:     "Manage Alt Repositories",
-				UsageText: "alt repo <subcomamnd>",
+				Usage:     "Manage Pax Repositories",
+				UsageText: "pax repo <subcomamnd>",
 				Aliases:   []string{"r"},
 				Subcommands: []*cli.Command{
 					// For Later
-					{
-						Name:      "import-key",
-						Usage:     "Import Alt Repository GPG Key",
-						UsageText: "alt repo import-key <keyfile>",
-						Action: func(c *cli.Context) error {
-							c.Args().First()
-							println("Test this command, alt repo imoprt-key")
-							return nil
-						},
-					},
+					// {
+					// 	Name:      "import-key",
+					// 	Usage:     "Import Alt Repository GPG Key",
+					// 	UsageText: "alt repo import-key <keyfile>",
+					// 	Action: func(c *cli.Context) error {
+					// 		c.Args().First()
+					// 		println("Test this command, alt repo imoprt-key")
+					// 		return nil
+					// 	},
+					// },
 					{
 						Name:      "add",
-						Usage:     "Add new Alt Repository",
-						UsageText: "alt repo add <repository>",
+						Usage:     "Add new Pax Repository",
+						UsageText: "pax repo add <repository>",
 						Action:    cmd.Add,
 					},
 				},
