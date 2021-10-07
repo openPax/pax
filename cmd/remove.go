@@ -3,7 +3,7 @@ package cmd
 import (
 	"strings"
 
-	"github.com/innatical/alt/util"
+	"github.com/innatical/pax/util"
 	apkg "github.com/innatical/apkg/util"
 	"github.com/urfave/cli/v2"
 )
@@ -28,7 +28,7 @@ func Remove(c *cli.Context) error {
 		}
 
 		if len(dependents) > 0 {
-			return &apkg.ErrorString{S: "Package " + name + " is required by " +  strings.Join(dependents, ", ")}
+			return &apkg.ErrorString{S: "Errno 2: Package " + name + " Is Required By " +  strings.Join(dependents, ", ")}
 		}
 
 		if err := util.Remove(c.String("root"), name); err != nil {

@@ -1,12 +1,12 @@
 spec = 1
 
 [package]
-name = "alt"
-description = "The Alt Package Manager"
+name = "pax"
+description = "The Pax Package Manager"
 version = "1.0.3"
 authors = [
   "Lleyton <lleyton@innatical.com>"
-  "Anise Star (Minor Edits) <anise@fivnex.co>"
+  "Anise Star <anise@e.email>"
 ]
 maintainers = [
   "Lleyton <lleyton@innatical.com>"
@@ -19,4 +19,4 @@ optional = [
 ]
 
 [bin]
-alt = "./alt"
+pax = "./pax"

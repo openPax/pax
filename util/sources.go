@@ -54,12 +54,12 @@ func ReadSourcesList(root string) ([]string, error) {
 		return nil, err
 	}
 
-	_, err := os.Stat(filepath.Join(root, "altsources.list"))
+	_, err := os.Stat(filepath.Join(root, "paxsources.list"))
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return nil, err
 		} else {
-			file, err := os.Create(filepath.Join(root, "altsources.list"))
+			file, err := os.Create(filepath.Join(root, "paxsources.list"))
 			if err != nil {
 				return nil, err
 			}
@@ -68,7 +68,7 @@ func ReadSourcesList(root string) ([]string, error) {
 		}
 	}
 
-	file, err := os.Open(filepath.Join(root, "altsources.list"))
+	file, err := os.Open(filepath.Join(root, "paxsources.list"))
 
 	if err != nil {
 		return nil, err
