@@ -3,8 +3,8 @@ package cmd
 import (
 	"strings"
 
+	apkg "github.com/innatical/apkg/v2/util"
 	"github.com/innatical/pax/util"
-	apkg "github.com/innatical/apkg/util"
 	"github.com/urfave/cli/v2"
 )
 

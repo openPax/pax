@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/semver"
-	apkg "github.com/innatical/apkg/util"
+	apkg "github.com/innatical/apkg/v2/util"
 )
 
 func Install(root string, name string, version string, installOptional bool) error {
