@@ -19,5 +19,5 @@ optional = [
   "apkg@^1.0.0"
 ]
 
-[bin]
-pax = "./pax"
+[files]
+"bin/pax" = "./pax"
