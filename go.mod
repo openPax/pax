@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v0.4.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/charmbracelet/lipgloss v0.4.0
-	github.com/innatical/apkg/v2 v2.0.6
+	github.com/innatical/apkg/v2 v2.0.7
 	github.com/urfave/cli/v2 v2.3.0
 )
 
@@ -20,5 +20,5 @@ require (
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
-	golang.org/x/sys v0.0.0-20211029165221-6e7872819dc8 // indirect
+	golang.org/x/sys v0.0.0-20211030160813-b3129d9d1021 // indirect
 )
