@@ -5,12 +5,12 @@ name = "pax"
 description = "The Pax Package Manager"
 version = "1.0.3"
 authors = [
-  "Lleyton <lleyton@innatical.com>"
+  "Lleyton <lleyton@innatical.com>",
   "Anise Star <anise@e.email>",
   "Jamie Thalacker <hello@jamiethalacker.dev>"
 ]
 maintainers = [
-  "Lleyton <lleyton@innatical.com>"
+  "Lleyton <lleyton@innatical.com>",
   "Boop! Linux Team"
 ]
 
@@ -19,5 +19,5 @@ optional = [
   "apkg@^1.0.0"
 ]
 
-[bin]
-pax = "./pax"
+[files]
+"bin/pax" = "./pax"
