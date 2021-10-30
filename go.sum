@@ -36,6 +36,8 @@ github.com/innatical/apkg/v2 v2.0.4 h1:1TVEdgE3O/cqCQ6uMVKxQUghL5+SCT8bgGQalxT01
 github.com/innatical/apkg/v2 v2.0.4/go.mod h1:Gdiy3bW1MX8kLfe9WAztwtXKYNEULKH8UYiKKEqTMbY=
 github.com/innatical/apkg/v2 v2.0.5 h1:uyEvE8aaKMIQ4YKUL9Q6EnvimIvYNL9uf7bBlIvqPnY=
 github.com/innatical/apkg/v2 v2.0.5/go.mod h1:Gdiy3bW1MX8kLfe9WAztwtXKYNEULKH8UYiKKEqTMbY=
+github.com/innatical/apkg/v2 v2.0.6 h1:A/wN+mCFZId2ZL3rKg9RkSi+bkBC1g+sCWtupQFJ6+Y=
+github.com/innatical/apkg/v2 v2.0.6/go.mod h1:Gdiy3bW1MX8kLfe9WAztwtXKYNEULKH8UYiKKEqTMbY=
 github.com/lucasb-eyer/go-colorful v1.2.0 h1:1nnpGOrhyZZuNyfu1QjKiUICQ74+3FNCN69Aj6K7nkY=
 github.com/lucasb-eyer/go-colorful v1.2.0/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
 github.com/mattn/go-isatty v0.0.12 h1:wuysRhFDzyxgEmMf5xjvJ2M9dZoWAXNNr5LSBS7uHXY=
