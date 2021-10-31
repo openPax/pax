@@ -19,12 +19,12 @@ func UpdateSourcesList(root string, source string) error {
 		return err
 	}
 
-	_, err := os.Stat(filepath.Join(root, "altsources.list"))
+	_, err := os.Stat(filepath.Join(root, "paxsources.list"))
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return err
 		} else {
-			file, err := os.Create(filepath.Join(root, "altsources.list"))
+			file, err := os.Create(filepath.Join(root, "paxsources.list"))
 			if err != nil {
 				return err
 			}
@@ -33,7 +33,7 @@ func UpdateSourcesList(root string, source string) error {
 		}
 	}
 
-	file, err := os.OpenFile(filepath.Join(root, "altsources.list"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(filepath.Join(root, "paxsources.list"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
 		return err
