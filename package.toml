@@ -3,7 +3,7 @@ spec = 1
 [package]
 name = "pax"
 description = "The Pax Package Manager"
-version = "2.0.4"
+version = "2.0.7"
 authors = [
   "Lleyton <lleyton@innatical.com>",
   "Anise Star <anise@e.email>",
