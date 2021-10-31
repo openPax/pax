@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/innatical/pax/cmd"
+	"github.com/innatical/pax/v2/cmd"
 
 	"github.com/urfave/cli/v2"
 )
@@ -23,7 +23,7 @@ func main() {
 	app := &cli.App{
 		Name:      "pax",
 		Usage:     "Pax Package Manager",
-		UsageText: "Pax [global options] command [command options] [arguments...]",
+		UsageText: "pax [global options] command [command options] [arguments...]",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "root",

@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	apkg "github.com/innatical/apkg/v2/util"
-	"github.com/innatical/pax/util"
+	"github.com/innatical/pax/v2/util"
 	"github.com/urfave/cli/v2"
 )
 
