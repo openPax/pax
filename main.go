@@ -92,7 +92,7 @@ func main() {
 				Name:      "repo",
 				Usage:     "Manage Pax Repositories",
 				UsageText: "pax repo <subcomamnd>",
-				Aliases:   []string{"r"},
+				Aliases:   []string{"re"},
 				Subcommands: []*cli.Command{
 					{
 						Name:      "add",
