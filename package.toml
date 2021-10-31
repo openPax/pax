@@ -3,7 +3,7 @@ spec = 1
 [package]
 name = "pax"
 description = "The Pax Package Manager"
-version = "1.0.3"
+version = "2.0.0"
 authors = [
   "Lleyton <lleyton@innatical.com>",
   "Anise Star <anise@e.email>",
@@ -16,7 +16,7 @@ maintainers = [
 
 [dependencies]
 optional = [
-  "apkg@^1.0.0"
+  "apkg@^2.0.0"
 ]
 
 [files]
