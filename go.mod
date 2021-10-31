@@ -1,4 +1,4 @@
-module github.com/innatical/pax
+module github.com/innatical/pax/v2
 
 go 1.17
 
