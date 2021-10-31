@@ -114,21 +114,40 @@ func FetchSourcesList(list []string) ([]Source, error) {
 	return sources, nil
 }
 
-func GetLatest(versions map[string]string) (*semver.Version, error) {
-	var vs []*semver.Version
+type BySemver []string
 
-	for s := range versions {
-		version, err := semver.NewVersion(s)
-		if err != nil {
-			return nil, err
-		}
+func (s BySemver) Len() int {
+    return len(s)
+}
 
-		vs = append(vs, version)
+func (s BySemver) Swap(i, j int) {
+    s[i], s[j] = s[j], s[i]
+}
+
+func (s BySemver) Less(i, j int) bool {
+	iVersion, err := semver.NewVersion(s[i])
+	if err != nil {
+		return false
 	}
 
-	sort.Sort(semver.Collection(vs))
+	jVersion, err := semver.NewVersion(s[j])
+	if err != nil {
+		return false
+	}
 
-	return vs[len(vs)-1], nil
+    return iVersion.LessThan(jVersion)
+}
+
+func GetLatest(versions map[string]string) string {
+	var vs []string
+
+	for s := range versions {
+		vs = append(vs, s)
+	}
+
+	sort.Sort(BySemver(vs))
+
+	return vs[len(vs) - 1]
 }
 
 func Search(root string, query string) ([]string, error) {
@@ -147,12 +166,9 @@ func Search(root string, query string) ([]string, error) {
 	for i := range sourcesList {
 		for s := range sourcesList[i].Packages {
 			if strings.Contains(s, query) {
-				latest, err := GetLatest(sourcesList[i].Packages[s])
-				if err != nil {
-					return nil, err
-				}
+				latest := GetLatest(sourcesList[i].Packages[s])
 
-				found = append(found, s+"@"+latest.String())
+				found = append(found, s + "@" + latest)
 			}
 		}
 	}

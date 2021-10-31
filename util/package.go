@@ -39,12 +39,7 @@ func Install(root string, name string, version string, installOptional bool) err
 	v := ""
 
 	if version == "" {
-		semver, err := GetLatest(pkg)
-		if err != nil {
-			return err
-		}
-
-		v = semver.String()
+		v = GetLatest(pkg)
 	} else {
 		constraint, err := semver.NewConstraint(version)
 		if err != nil {
@@ -58,7 +53,7 @@ func Install(root string, name string, version string, installOptional bool) err
 			}
 
 			if constraint.Check(semver) {
-				v = semver.String()
+				v = ver
 				break
 			}
 		}
@@ -361,7 +356,7 @@ func Upgrade(root, name string, sv bool) error {
 		return &apkg.ErrorString{S: "Errno 4: Could not find package with name " + name}
 	}
 
-	var versions []*semver.Version
+	var versions []string
 
 	for k := range pkg {
 		ver, err := semver.NewVersion(k)
@@ -375,12 +370,12 @@ func Upgrade(root, name string, sv bool) error {
 			}
 		}
 
-		versions = append(versions, ver)
+		versions = append(versions, k)
 
 		failed:
 	}
 
-	sort.Sort(semver.Collection(versions))
+	sort.Sort(BySemver(versions))
 
 	if len(versions) == 0 {
 		return &apkg.ErrorString{S: "Errno 7: Could not find latest version for package  " + name }
@@ -388,12 +383,12 @@ func Upgrade(root, name string, sv bool) error {
 
 	chosen := versions[len(versions) - 1]
 
-	if chosen.String() != db.Packages[name].Package.Version {
+	if chosen != db.Packages[name].Package.Version {
 		if err := apkg.Remove(root, name); err != nil {
 			return err
 		}
 
-		if err := Install(root, name, chosen.String(), false); err != nil {
+		if err := Install(root, name, chosen, false); err != nil {
 			return err
 		}
 	}
