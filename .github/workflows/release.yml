@@ -34,10 +34,10 @@ jobs:
           mv pax-linux-amd64 linux-amd64/pax
           cp package.toml linux-arm64
           mv pax-linux-arm64 linux-arm64/pax
-          (cd darwin-amd64 && tar -cf --zstd ../darwin-amd64.apkg *)
-          (cd darwin-arm64 && tar -cf --zstd ../darwin-arm64.apkg *)
-          (cd linux-amd64 && tar -cf --zstd ../linux-amd64.apkg *)
-          (cd linux-arm64 && tar -cf --zstd ../linux-arm64.apkg *)
+          (cd darwin-amd64 && tar --zstd -cf ../darwin-amd64.apkg *)
+          (cd darwin-arm64 && tar --zstd -cf ../darwin-arm64.apkg *)
+          (cd linux-amd64 && tar --zstd -cf ../linux-amd64.apkg *)
+          (cd linux-arm64 && tar --zstd -cf ../linux-arm64.apkg *)
       - name: Release pax
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/v')
