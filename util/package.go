@@ -177,12 +177,12 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 }
 
 func InstallMultiple(root string, packages []string, installOptional bool) error {
-	list, err := ReadSourcesList(root)
+	list, err := ReadReposList(root)
 	if err != nil {
 		return err
 	}
 
-	sources, err := FetchSourcesList(list)
+	sources, err := FetchSourcesList(list.Repos)
 	if err != nil {
 		return err
 	}
