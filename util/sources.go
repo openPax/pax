@@ -86,6 +86,8 @@ func FetchSourcesList(list map[string]string) ([]Source, error) {
 			return nil, err
 		}
 
+		resp.Body.Close()
+
 		sources = append(sources, source)
 	}
 
