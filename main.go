@@ -106,6 +106,12 @@ func main() {
 						UsageText: "pax repo list",
 						Action:    cmd.RepoList,
 					},
+					{
+						Name:      "remove",
+						Usage:     "Remove Pax Repository",
+						UsageText: "pax repo remove <repository-name>",
+						Action:    cmd.RepoRemove,
+					},
 				},
 			},
 		},
