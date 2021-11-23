@@ -19,7 +19,17 @@ func RepoAdd(c *cli.Context) error {
 
 	defer util.UnlockDatabase(c.String("root"))
 
-	util.UpdateSourcesList(c.String("root"), c.Args().First())
+	repos, err := util.ReadReposList(c.String("root"))
+
+	if err != nil {
+		return err
+	}
+
+	repos.Repos[c.Args().Get(0)] = c.Args().Get(1)
+
+	if err := util.WriteReposList(c.String("root"), repos); err != nil {
+		return err
+	}
 
 	return nil
 }

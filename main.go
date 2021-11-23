@@ -97,7 +97,7 @@ func main() {
 					{
 						Name:      "add",
 						Usage:     "Add new Pax Repository",
-						UsageText: "pax repo add <repository>",
+						UsageText: "pax repo add <repository-name> <repository>",
 						Action:    cmd.RepoAdd,
 					},
 					{

@@ -47,6 +47,25 @@ func ReadReposList(root string) (*ReposList, error) {
 	return &repos, nil
 }
 
+func WriteReposList(root string, repos *ReposList) error {
+	if err := os.MkdirAll(root, 0755); err != nil {
+		return err
+	}
+
+	file, err := os.OpenFile(filepath.Join(root, "repos.toml"), os.O_TRUNC|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	if err := toml.NewEncoder(file).Encode(repos); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func UpdateSourcesList(root string, source string) error {
 	println("Adding " + source + " to sources list")
 
