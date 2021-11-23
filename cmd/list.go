@@ -25,9 +25,23 @@ func List(c *cli.Context) error {
 		return err
 	}
 
-	for k, d := range db.Packages {
-		println(k + "@" + d.Package.Version)
+	if len(db.Packages) == 0 {
+		return &apkg.ErrorString{S: "No packages installed"}
 	}
+
+	table := make(map[string]string)
+	maxWidth := 0
+
+	for _, dbPackage := range db.Packages {
+		table[dbPackage.Package.Name+"@"+dbPackage.Package.Version] = dbPackage.Hash
+
+		lineWidth := len(dbPackage.Package.Name) + 1 + len(dbPackage.Package.Version) + 5 + len(dbPackage.Hash)
+		if lineWidth > maxWidth {
+			maxWidth = lineWidth
+		}
+	}
+
+	println(apkg.RenderTable(table, maxWidth))
 
 	return nil
 }
