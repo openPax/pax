@@ -1,6 +1,7 @@
 package util
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"os"
@@ -10,12 +11,15 @@ import (
 
 	"github.com/Masterminds/semver"
 	apkg "github.com/innatical/apkg/v2/util"
+	"golang.org/x/sync/semaphore"
 )
 
 type ResolvedPackage struct {
 	Version string
 	File    string
 }
+
+var downloadSemaphore = semaphore.NewWeighted(5)
 
 func IsResolved(resolved map[string]ResolvedPackage, name, constraint string) (bool, error) {
 	if _, ok := resolved[name]; !ok {
@@ -122,20 +126,32 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 
 		url := pkg[v]
 
-		resp, err := http.Get(url)
-		if err != nil {
-			fatalErrors <- err
-			return
-		}
+		var f *os.File
 
-		f, err := os.CreateTemp(os.TempDir(), "pax")
-		if err != nil {
-			fatalErrors <- err
-			return
-		}
-		defer f.Close()
+		if err := func() error {
+			// TODO: It's 12am and I forgot what context does again
+			downloadSemaphore.Acquire(context.Background(), 1)
+			defer downloadSemaphore.Release(1)
 
-		if _, err := io.Copy(f, resp.Body); err != nil {
+			resp, err := http.Get(url)
+			if err != nil {
+				return err
+			}
+
+			defer resp.Body.Close()
+
+			f, err = os.CreateTemp(os.TempDir(), "pax")
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+
+			if _, err := io.Copy(f, resp.Body); err != nil {
+				return err
+			}
+
+			return nil
+		}(); err != nil {
 			fatalErrors <- err
 			return
 		}
@@ -298,19 +314,33 @@ func Install(root string, name string, version string, installOptional bool) err
 
 	url := pkg[v]
 
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
+	var f *os.File
 
-	f, err := os.CreateTemp(os.TempDir(), "pax")
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	defer os.Remove(f.Name())
+	if err := func() error {
+		// TODO: It's 12am and I forgot what context does again
+		downloadSemaphore.Acquire(context.Background(), 1)
+		defer downloadSemaphore.Release(1)
 
-	if _, err := io.Copy(f, resp.Body); err != nil {
+		resp, err := http.Get(url)
+		if err != nil {
+			return err
+		}
+
+		defer resp.Body.Close()
+
+		f, err = os.CreateTemp(os.TempDir(), "pax")
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		defer os.Remove(f.Name())
+
+		if _, err := io.Copy(f, resp.Body); err != nil {
+			return err
+		}
+
+		return nil
+	}(); err != nil {
 		return err
 	}
 

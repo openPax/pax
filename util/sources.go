@@ -1,4 +1,5 @@
 package util
+
 import (
 	"net/http"
 	"os"
@@ -86,6 +87,8 @@ func FetchSourcesList(list map[string]string) ([]Source, error) {
 			return nil, err
 		}
 
+		resp.Body.Close()
+
 		sources = append(sources, source)
 	}
 
@@ -95,11 +98,11 @@ func FetchSourcesList(list map[string]string) ([]Source, error) {
 type BySemver []string
 
 func (s BySemver) Len() int {
-    return len(s)
+	return len(s)
 }
 
 func (s BySemver) Swap(i, j int) {
-    s[i], s[j] = s[j], s[i]
+	s[i], s[j] = s[j], s[i]
 }
 
 func (s BySemver) Less(i, j int) bool {
@@ -113,7 +116,7 @@ func (s BySemver) Less(i, j int) bool {
 		return false
 	}
 
-    return iVersion.LessThan(jVersion)
+	return iVersion.LessThan(jVersion)
 }
 
 func GetLatest(versions map[string]string) string {
@@ -125,7 +128,7 @@ func GetLatest(versions map[string]string) string {
 
 	sort.Sort(BySemver(vs))
 
-	return vs[len(vs) - 1]
+	return vs[len(vs)-1]
 }
 
 func Search(root string, query string) ([]string, error) {
@@ -146,7 +149,7 @@ func Search(root string, query string) ([]string, error) {
 			if strings.Contains(s, query) {
 				latest := GetLatest(sourcesList[i].Packages[s])
 
-				found = append(found, s + "@" + latest)
+				found = append(found, s+"@"+latest)
 			}
 		}
 	}
