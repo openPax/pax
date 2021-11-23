@@ -73,8 +73,7 @@ type Source struct {
 func FetchSourcesList(list map[string]string) ([]Source, error) {
 	var sources []Source
 
-	for k, d := range list {
-		println("Fetching list " + k + " from " + d)
+	for _, d := range list {
 		resp, err := http.Get(d)
 
 		if err != nil {
@@ -131,7 +130,7 @@ func GetLatest(versions map[string]string) string {
 	return vs[len(vs)-1]
 }
 
-func Search(root string, query string) ([]string, error) {
+func Search(root string, query string) (map[string]string, error) {
 	repos, err := ReadReposList(root)
 	if err != nil {
 		return nil, err
@@ -142,14 +141,14 @@ func Search(root string, query string) ([]string, error) {
 		return nil, err
 	}
 
-	var found []string
+	var found = make(map[string]string)
 
 	for i := range sourcesList {
 		for s := range sourcesList[i].Packages {
 			if strings.Contains(s, query) {
 				latest := GetLatest(sourcesList[i].Packages[s])
 
-				found = append(found, s+"@"+latest)
+				found[s] = latest
 			}
 		}
 	}

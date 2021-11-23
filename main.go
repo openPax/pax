@@ -21,9 +21,10 @@ func main() {
 	}
 
 	app := &cli.App{
-		Name:      "pax",
-		Usage:     "Pax Package Manager",
-		UsageText: "pax [global options] command [command options] [arguments...]",
+		EnableBashCompletion: true,
+		Name:                 "pax",
+		Usage:                "Pax Package Manager",
+		UsageText:            "pax [global options] command [command options] [arguments...]",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "root",
@@ -102,7 +103,7 @@ func main() {
 					},
 					{
 						Name:      "list",
-                                                Usage:     "List all available repositories",
+						Usage:     "List all available repositories",
 						UsageText: "pax repo list",
 						Action:    cmd.RepoList,
 					},

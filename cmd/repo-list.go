@@ -25,9 +25,23 @@ func RepoList(c *cli.Context) error {
 		return err
 	}
 
-	for k, d := range repos.Repos {
-		println(k + ": " + d)
+	if len(repos.Repos) == 0 {
+		return &apkg.ErrorString{S: "No repositories added"}
 	}
+
+	table := make(map[string]string)
+	maxWidth := 0
+
+	for k, d := range repos.Repos {
+		table[k] = d
+
+		lineWidth := len(k) + 5 + len(d)
+		if lineWidth > maxWidth {
+			maxWidth = lineWidth
+		}
+	}
+
+	println(apkg.RenderTable(table, maxWidth))
 
 	return nil
 }
