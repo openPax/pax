@@ -1,5 +1,4 @@
 package util
-
 import (
 	"bufio"
 	"net/http"
@@ -11,6 +10,42 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/Masterminds/semver"
 )
+
+type ReposList struct {
+	Repos map[string]string `toml:"repos"`
+}
+
+func ReadReposList(root string) (*ReposList, error) {
+	if err := os.MkdirAll(root, 0755); err != nil {
+		return nil, err
+	}
+
+	_, err := os.Stat(filepath.Join(root, "repos.toml"))
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return nil, err
+		} else {
+			file, err := os.Create(filepath.Join(root, "repos.toml"))
+			if err != nil {
+				return nil, err
+			}
+
+			file.Close()
+		}
+	}
+
+	var repos ReposList
+
+	if _, err := toml.DecodeFile(filepath.Join(root, "repos.toml"), &repos); err != nil {
+		return nil, err
+	}
+
+	if repos.Repos == nil {
+		repos.Repos = make(map[string]string)
+	}
+
+	return &repos, nil
+}
 
 func UpdateSourcesList(root string, source string) error {
 	println("Adding " + source + " to sources list")

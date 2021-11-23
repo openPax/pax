@@ -6,7 +6,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func RepoAdd(c *cli.Context) error {
+func RepoList(c *cli.Context) error {
 	if err := apkg.LockDatabase(c.String("root")); err != nil {
 		return err
 	}
@@ -19,7 +19,15 @@ func RepoAdd(c *cli.Context) error {
 
 	defer util.UnlockDatabase(c.String("root"))
 
-	util.UpdateSourcesList(c.String("root"), c.Args().First())
+	repos, err := util.ReadReposList(c.String("root"))
+
+	if err != nil {
+		return err
+	}
+
+	for k, d := range repos.Repos {
+		println(k + ": " + d)
+	}
 
 	return nil
 }
