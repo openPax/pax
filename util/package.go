@@ -12,12 +12,12 @@ import (
 )
 
 func Install(root string, name string, version string, installOptional bool) error {
-	list, err := ReadSourcesList(root)
+	list, err := ReadReposList(root)
 	if err != nil {
 		return err
 	}
 
-	sources, err := FetchSourcesList(list)
+	sources, err := FetchSourcesList(list.Repos)
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func Install(root string, name string, version string, installOptional bool) err
 			break
 		}
 	}
-	
+
 
 	if pkg == nil {
 		return &apkg.ErrorString{S: "Errno 4: Could not find package with name " + name}
@@ -58,7 +58,7 @@ func Install(root string, name string, version string, installOptional bool) err
 			}
 		}
 	}
-	
+
 
 	if v == "" {
 		return &apkg.ErrorString{S: "Errno 5: Could not find package " + name + " with version " + version}
@@ -119,7 +119,7 @@ func Install(root string, name string, version string, installOptional bool) err
 			} else {
 				if err := Install(root, parsed[0], parsed[1], installOptional); err != nil {
 					return err
-				}	
+				}
 		  	}
 		}
 	}
@@ -299,7 +299,7 @@ func Upgrade(root, name string, sv bool) error {
 			parsed := strings.Split(value, "@")
 			if parsed[0] == name {
 				ver, err := semver.NewConstraint(parsed[1])
-				
+
 				if err != nil {
 					return err
 				}
@@ -312,7 +312,7 @@ func Upgrade(root, name string, sv bool) error {
 			parsed := strings.Split(value, "@")
 			if parsed[0] == name {
 				ver, err := semver.NewConstraint(parsed[1])
-				
+
 				if err != nil {
 					return err
 				}
@@ -331,13 +331,13 @@ func Upgrade(root, name string, sv bool) error {
 		constaints = append(constaints, ver)
 	}
 
-	list, err := ReadSourcesList(root)
+	list, err := ReadReposList(root)
 	if err != nil {
 		return err
 	}
 
 
-	sources, err := FetchSourcesList(list)
+	sources, err := FetchSourcesList(list.Repos)
 	if err != nil {
 		return err
 	}
@@ -350,7 +350,7 @@ func Upgrade(root, name string, sv bool) error {
 			break
 		}
 	}
-	
+
 
 	if pkg == nil {
 		return &apkg.ErrorString{S: "Errno 4: Could not find package with name " + name}
