@@ -9,7 +9,7 @@ import (
 )
 
 type Database struct {
-	Packages []string `toml:"packges"`
+	Packages []string `toml:"packages"`
 }
 
 func ReadDatabase(root string) (*Database, error) {
@@ -32,7 +32,6 @@ func ReadDatabase(root string) (*Database, error) {
 	if _, err := toml.DecodeFile(filepath.Join(root, "pax.toml"), &db); err != nil {
 		return nil, err
 	}
-
 
 	return &db, nil
 }
