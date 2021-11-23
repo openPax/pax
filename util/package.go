@@ -237,12 +237,12 @@ func InstallMultiple(root string, packages []string, installOptional bool) error
 }
 
 func Install(root string, name string, version string, installOptional bool) error {
-	list, err := ReadSourcesList(root)
+	list, err := ReadReposList(root)
 	if err != nil {
 		return err
 	}
 
-	sources, err := FetchSourcesList(list)
+	sources, err := FetchSourcesList(list.Repos)
 	if err != nil {
 		return err
 	}
@@ -553,12 +553,13 @@ func Upgrade(root, name string, sv bool) error {
 		constaints = append(constaints, ver)
 	}
 
-	list, err := ReadSourcesList(root)
+	list, err := ReadReposList(root)
 	if err != nil {
 		return err
 	}
 
-	sources, err := FetchSourcesList(list)
+	sources, err := FetchSourcesList(list.Repos)
+
 	if err != nil {
 		return err
 	}

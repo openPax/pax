@@ -97,8 +97,20 @@ func main() {
 					{
 						Name:      "add",
 						Usage:     "Add new Pax Repository",
-						UsageText: "pax repo add <repository>",
-						Action:    cmd.Add,
+						UsageText: "pax repo add <repository-name> <repository>",
+						Action:    cmd.RepoAdd,
+					},
+					{
+						Name:      "list",
+                                                Usage:     "List all available repositories",
+						UsageText: "pax repo list",
+						Action:    cmd.RepoList,
+					},
+					{
+						Name:      "remove",
+						Usage:     "Remove Pax Repository",
+						UsageText: "pax repo remove <repository-name>",
+						Action:    cmd.RepoRemove,
 					},
 				},
 			},

@@ -1,7 +1,5 @@
 package util
-
 import (
-	"bufio"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -12,54 +10,21 @@ import (
 	"github.com/Masterminds/semver"
 )
 
-func UpdateSourcesList(root string, source string) error {
-	println("Adding " + source + " to sources list")
-
-	if err := os.MkdirAll(root, 0755); err != nil {
-		return err
-	}
-
-	_, err := os.Stat(filepath.Join(root, "paxsources.list"))
-	if err != nil {
-		if !os.IsNotExist(err) {
-			return err
-		} else {
-			file, err := os.Create(filepath.Join(root, "paxsources.list"))
-			if err != nil {
-				return err
-			}
-
-			file.Close()
-		}
-	}
-
-	file, err := os.OpenFile(filepath.Join(root, "paxsources.list"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
-	if err != nil {
-		return err
-	}
-
-	if _, err := file.WriteString(source); err != nil {
-		return err
-		//return &util.ErrorString{S: "Error Saving File"}
-	}
-
-	defer file.Close()
-
-	return nil
+type ReposList struct {
+	Repos map[string]string `toml:"repos"`
 }
 
-func ReadSourcesList(root string) ([]string, error) {
+func ReadReposList(root string) (*ReposList, error) {
 	if err := os.MkdirAll(root, 0755); err != nil {
 		return nil, err
 	}
 
-	_, err := os.Stat(filepath.Join(root, "paxsources.list"))
+	_, err := os.Stat(filepath.Join(root, "repos.toml"))
 	if err != nil {
 		if !os.IsNotExist(err) {
 			return nil, err
 		} else {
-			file, err := os.Create(filepath.Join(root, "paxsources.list"))
+			file, err := os.Create(filepath.Join(root, "repos.toml"))
 			if err != nil {
 				return nil, err
 			}
@@ -68,35 +33,48 @@ func ReadSourcesList(root string) ([]string, error) {
 		}
 	}
 
-	file, err := os.Open(filepath.Join(root, "paxsources.list"))
+	var repos ReposList
 
-	if err != nil {
+	if _, err := toml.DecodeFile(filepath.Join(root, "repos.toml"), &repos); err != nil {
 		return nil, err
+	}
+
+	if repos.Repos == nil {
+		repos.Repos = make(map[string]string)
+	}
+
+	return &repos, nil
+}
+
+func WriteReposList(root string, repos *ReposList) error {
+	if err := os.MkdirAll(root, 0755); err != nil {
+		return err
+	}
+
+	file, err := os.OpenFile(filepath.Join(root, "repos.toml"), os.O_TRUNC|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
 	}
 
 	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-
-	scanner.Split(bufio.ScanLines)
-	var sources []string
-
-	for scanner.Scan() {
-		sources = append(sources, scanner.Text())
+	if err := toml.NewEncoder(file).Encode(repos); err != nil {
+		return err
 	}
 
-	return sources, nil
+	return nil
 }
 
 type Source struct {
 	Packages map[string]map[string]string `toml:"packages"`
 }
 
-func FetchSourcesList(list []string) ([]Source, error) {
+func FetchSourcesList(list map[string]string) ([]Source, error) {
 	var sources []Source
 
-	for i := range list {
-		resp, err := http.Get(list[i])
+	for k, d := range list {
+		println("Fetching list " + k + " from " + d)
+		resp, err := http.Get(d)
 
 		if err != nil {
 			return nil, err
@@ -151,12 +129,12 @@ func GetLatest(versions map[string]string) string {
 }
 
 func Search(root string, query string) ([]string, error) {
-	list, err := ReadSourcesList(root)
+	repos, err := ReadReposList(root)
 	if err != nil {
 		return nil, err
 	}
 
-	sourcesList, err := FetchSourcesList(list)
+	sourcesList, err := FetchSourcesList(repos.Repos)
 	if err != nil {
 		return nil, err
 	}

@@ -6,7 +6,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func RepoAdd(c *cli.Context) error {
+func RepoRemove(c *cli.Context) error {
 	if err := apkg.LockDatabase(c.String("root")); err != nil {
 		return err
 	}
@@ -25,7 +25,7 @@ func RepoAdd(c *cli.Context) error {
 		return err
 	}
 
-	repos.Repos[c.Args().Get(0)] = c.Args().Get(1)
+	delete(repos.Repos, c.Args().Get(0))
 
 	if err := util.WriteReposList(c.String("root"), repos); err != nil {
 		return err
