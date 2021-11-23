@@ -1,4 +1,5 @@
 package util
+
 import (
 	"net/http"
 	"os"
@@ -72,8 +73,7 @@ type Source struct {
 func FetchSourcesList(list map[string]string) ([]Source, error) {
 	var sources []Source
 
-	for k, d := range list {
-		println("Fetching list " + k + " from " + d)
+	for _, d := range list {
 		resp, err := http.Get(d)
 
 		if err != nil {
@@ -95,11 +95,11 @@ func FetchSourcesList(list map[string]string) ([]Source, error) {
 type BySemver []string
 
 func (s BySemver) Len() int {
-    return len(s)
+	return len(s)
 }
 
 func (s BySemver) Swap(i, j int) {
-    s[i], s[j] = s[j], s[i]
+	s[i], s[j] = s[j], s[i]
 }
 
 func (s BySemver) Less(i, j int) bool {
@@ -113,7 +113,7 @@ func (s BySemver) Less(i, j int) bool {
 		return false
 	}
 
-    return iVersion.LessThan(jVersion)
+	return iVersion.LessThan(jVersion)
 }
 
 func GetLatest(versions map[string]string) string {
@@ -125,10 +125,10 @@ func GetLatest(versions map[string]string) string {
 
 	sort.Sort(BySemver(vs))
 
-	return vs[len(vs) - 1]
+	return vs[len(vs)-1]
 }
 
-func Search(root string, query string) ([]string, error) {
+func Search(root string, query string) (map[string]string, error) {
 	repos, err := ReadReposList(root)
 	if err != nil {
 		return nil, err
@@ -139,14 +139,14 @@ func Search(root string, query string) ([]string, error) {
 		return nil, err
 	}
 
-	var found []string
+	var found = make(map[string]string)
 
 	for i := range sourcesList {
 		for s := range sourcesList[i].Packages {
 			if strings.Contains(s, query) {
 				latest := GetLatest(sourcesList[i].Packages[s])
 
-				found = append(found, s + "@" + latest)
+				found[s] = latest
 			}
 		}
 	}
