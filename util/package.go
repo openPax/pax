@@ -11,6 +11,7 @@ import (
 
 	"github.com/Masterminds/semver"
 	apkg "github.com/innatical/apkg/v2/util"
+	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
 
@@ -43,11 +44,8 @@ func IsResolved(resolved map[string]ResolvedPackage, name, constraint string) (b
 	return true, nil
 }
 
-func ResolveNeeded(root string, sources []Source, pkg string, installOptional bool, state map[string]ResolvedPackage, stateLock *sync.Mutex, wg *sync.WaitGroup, fatalErrors chan error) {
-	wg.Add(1)
-
-	go func() {
-		defer wg.Done()
+func ResolveNeeded(root string, sources []Source, pkg string, installOptional bool, state map[string]ResolvedPackage, stateLock *sync.Mutex, group *errgroup.Group) {
+	group.Go(func() error {
 		parsed := strings.Split(pkg, "@")
 		name := parsed[0]
 		version := ""
@@ -66,8 +64,7 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 		}
 
 		if pkg == nil {
-			fatalErrors <- &apkg.ErrorString{S: "Errno 4: Could not find package with name " + name}
-			return
+			return &apkg.ErrorString{S: "Errno 4: Could not find package with name " + name}
 		}
 
 		v := ""
@@ -77,15 +74,13 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 		} else {
 			constraint, err := semver.NewConstraint(version)
 			if err != nil {
-				fatalErrors <- err
-				return
+				return err
 			}
 
 			for ver := range pkg {
 				semver, err := semver.NewVersion(ver)
 				if err != nil {
-					fatalErrors <- err
-					return
+					return err
 				}
 
 				if constraint.Check(semver) {
@@ -96,32 +91,29 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 		}
 
 		if v == "" {
-			fatalErrors <- &apkg.ErrorString{S: "Errno 5: Could not find package " + name + " with version " + version}
-			return
+			return &apkg.ErrorString{S: "Errno 5: Could not find package " + name + " with version " + version}
 		}
 
 		stateLock.Lock()
 		resolved, err := IsResolved(state, name, v)
 		if err != nil {
 			stateLock.Unlock()
-			fatalErrors <- err
-			return
+			return err
 		}
 
 		stateLock.Unlock()
 
 		if resolved {
-			return
+			return nil
 		}
 
 		installed, err := IsInstalled(root, name, v)
 		if err != nil {
-			fatalErrors <- err
-			return
+			return err
 		}
 
 		if installed {
-			return
+			return nil
 		}
 
 		url := pkg[v]
@@ -152,23 +144,21 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 
 			return nil
 		}(); err != nil {
-			fatalErrors <- err
-			return
+			return err
 		}
 
 		pkgRoot, err := apkg.InspectPackage(f.Name())
 		if err != nil {
-			fatalErrors <- err
-			return
+			return err
 		}
 
 		for _, dep := range pkgRoot.Dependencies.Required {
-			ResolveNeeded(root, sources, dep, installOptional, state, stateLock, wg, fatalErrors)
+			ResolveNeeded(root, sources, dep, installOptional, state, stateLock, group)
 		}
 
 		if installOptional {
 			for _, dep := range pkgRoot.Dependencies.Optional {
-				ResolveNeeded(root, sources, dep, installOptional, state, stateLock, wg, fatalErrors)
+				ResolveNeeded(root, sources, dep, installOptional, state, stateLock, group)
 			}
 		}
 
@@ -177,19 +167,20 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 
 		resolved, err = IsResolved(state, name, v)
 		if err != nil {
-			fatalErrors <- err
-			return
+			return err
 		}
 
 		if resolved {
-			return
+			return nil
 		}
 
 		state[name] = ResolvedPackage{
 			Version: v,
 			File:    f.Name(),
 		}
-	}()
+
+		return nil
+	})
 }
 
 func InstallMultiple(root string, packages []string, installOptional bool) error {
@@ -203,35 +194,23 @@ func InstallMultiple(root string, packages []string, installOptional bool) error
 		return err
 	}
 
-	fatalErrors := make(chan error)
 	resolved := make(map[string]ResolvedPackage)
-	wgDone := make(chan bool)
+	group := new(errgroup.Group)
 	var resolvedLock sync.Mutex
-	var wg sync.WaitGroup
 
 	for _, pkg := range packages {
 		pkg := pkg
 
-		ResolveNeeded(root, sources, pkg, installOptional, resolved, &resolvedLock, &wg, fatalErrors)
+		ResolveNeeded(root, sources, pkg, installOptional, resolved, &resolvedLock, group)
 	}
 
-	go func() {
-		wg.Wait()
-		close(wgDone)
-	}()
-
-	select {
-	case <-wgDone:
-		break
-	case err := <-fatalErrors:
-		// NOTE: I know that this is really stupid
+	if err := group.Wait(); err != nil {
 		resolvedLock.Lock()
 		for _, res := range resolved {
 			os.Remove(res.File)
 		}
 		resolvedLock.Unlock()
 
-		close(fatalErrors)
 		return err
 	}
 
