@@ -12,6 +12,7 @@ require (
 )
 
 require (
+	github.com/cheggaaa/pb v1.0.29
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
 	github.com/goombaio/dag v0.0.0-20181006234417-a8874b1f72ff // indirect
 	github.com/goombaio/orderedmap v0.0.0-20180925151256-3da0e2f905f9 // indirect

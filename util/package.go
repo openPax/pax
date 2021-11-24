@@ -6,10 +6,14 @@ import (
 	"net/http"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/Masterminds/semver"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/cheggaaa/pb"
 	apkg "github.com/innatical/apkg/v2/util"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
@@ -120,10 +124,14 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 
 		var f *os.File
 
+		var sourceSize int64
+
 		if err := func() error {
 			// TODO: It's 12am and I forgot what context does again
 			downloadSemaphore.Acquire(context.Background(), 1)
 			defer downloadSemaphore.Release(1)
+
+			println("Downloading " + lipgloss.NewStyle().Bold(true).Render(name))
 
 			resp, err := http.Get(url)
 			if err != nil {
@@ -132,15 +140,27 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 
 			defer resp.Body.Close()
 
+			i, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
+
+			sourceSize = int64(i)
+
 			f, err = os.CreateTemp(os.TempDir(), "pax")
 			if err != nil {
 				return err
 			}
 			defer f.Close()
 
-			if _, err := io.Copy(f, resp.Body); err != nil {
+			bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10)
+			bar.ShowSpeed = true
+			bar.Start()
+
+			reader := bar.NewProxyReader(resp.Body)
+
+			if _, err := io.Copy(f, reader); err != nil {
 				return err
 			}
+
+			bar.Finish()
 
 			return nil
 		}(); err != nil {
@@ -295,10 +315,14 @@ func Install(root string, name string, version string, installOptional bool) err
 
 	var f *os.File
 
+	var sourceSize int64
+
 	if err := func() error {
 		// TODO: It's 12am and I forgot what context does again
 		downloadSemaphore.Acquire(context.Background(), 1)
 		defer downloadSemaphore.Release(1)
+
+		println("Downloading " + lipgloss.NewStyle().Bold(true).Render(name))
 
 		resp, err := http.Get(url)
 		if err != nil {
@@ -307,6 +331,10 @@ func Install(root string, name string, version string, installOptional bool) err
 
 		defer resp.Body.Close()
 
+		i, _ := strconv.Atoi(resp.Header.Get("Content-Length"))
+
+		sourceSize = int64(i)
+
 		f, err = os.CreateTemp(os.TempDir(), "pax")
 		if err != nil {
 			return err
@@ -314,9 +342,17 @@ func Install(root string, name string, version string, installOptional bool) err
 		defer f.Close()
 		defer os.Remove(f.Name())
 
-		if _, err := io.Copy(f, resp.Body); err != nil {
+		bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10)
+		bar.ShowSpeed = true
+		bar.Start()
+
+		reader := bar.NewProxyReader(resp.Body)
+
+		if _, err := io.Copy(f, reader); err != nil {
 			return err
 		}
+
+		bar.Finish()
 
 		return nil
 	}(); err != nil {
