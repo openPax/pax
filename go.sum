@@ -27,6 +27,8 @@ github.com/innatical/apkg/v2 v2.0.16 h1:3/MGRDLcjqcYqRvPmnzh0itqwhhRgdin2d31/Vub
 github.com/innatical/apkg/v2 v2.0.16/go.mod h1:paRA8M+CKHqarnfmO2TltZ329CxwcIoCm342auqV8TY=
 github.com/innatical/apkg/v2 v2.0.17 h1:uav7SxyonrpgEu/v5S8TD1TDdrWdpSniPPguDqYhDek=
 github.com/innatical/apkg/v2 v2.0.17/go.mod h1:paRA8M+CKHqarnfmO2TltZ329CxwcIoCm342auqV8TY=
+github.com/innatical/apkg/v2 v2.0.18 h1:KsyHmF2TimABU+CncRc+Uwtf/dKkjSdapE7DzRM16jo=
+github.com/innatical/apkg/v2 v2.0.18/go.mod h1:paRA8M+CKHqarnfmO2TltZ329CxwcIoCm342auqV8TY=
 github.com/klauspost/compress v1.13.6 h1:P76CopJELS0TiO2mebmnzgWaajssP/EszplttgQxcgc=
 github.com/klauspost/compress v1.13.6/go.mod h1:/3/Vjq9QcHkK5uEr5lBEmyoZ1iFhe47etQ6QUkpK6sk=
 github.com/lucasb-eyer/go-colorful v1.2.0 h1:1nnpGOrhyZZuNyfu1QjKiUICQ74+3FNCN69Aj6K7nkY=
