@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -124,6 +125,8 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 
 		var f *os.File
 
+		var fName = filepath.Join(root, "cache", name+version+".apkg")
+
 		var sourceSize int64
 
 		if err := func() error {
@@ -144,23 +147,36 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 
 			sourceSize = int64(i)
 
-			f, err = os.CreateTemp(os.TempDir(), "pax")
-			if err != nil {
-				return err
-			}
-			defer f.Close()
-
-			bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10)
-			bar.ShowSpeed = true
-			bar.Start()
-
-			reader := bar.NewProxyReader(resp.Body)
-
-			if _, err := io.Copy(f, reader); err != nil {
+			if err := os.MkdirAll(filepath.Join(root, "cache"), 0755); err != nil {
 				return err
 			}
 
-			bar.Finish()
+			if _, err := os.Stat(fName); err != nil {
+				println("file does not exist")
+				f, err = os.OpenFile(fName, os.O_RDWR|os.O_CREATE, 0755)
+				if err != nil {
+					return err
+				}
+
+				bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10)
+				bar.ShowSpeed = true
+				bar.Start()
+
+				reader := bar.NewProxyReader(resp.Body)
+
+				if _, err := io.Copy(f, reader); err != nil {
+					return err
+				}
+
+				bar.Finish()
+			} else {
+				println("File exists, not redownloading")
+				f, err = os.OpenFile(fName, os.O_RDWR|os.O_CREATE, 0755)
+				if err != nil {
+					return err
+				}
+				return err
+			}
 
 			return nil
 		}(); err != nil {
@@ -242,10 +258,6 @@ func InstallMultiple(root string, packages []string, installOptional bool) error
 
 	if err := apkg.InstallMultiple(root, files); err != nil {
 		return err
-	}
-
-	for _, file := range files {
-		os.Remove(file)
 	}
 
 	return nil
@@ -335,24 +347,38 @@ func Install(root string, name string, version string, installOptional bool) err
 
 		sourceSize = int64(i)
 
-		f, err = os.CreateTemp(os.TempDir(), "pax")
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-		defer os.Remove(f.Name())
+		var fName = filepath.Join(root, "cache", name+version+".apkg")
 
-		bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10)
-		bar.ShowSpeed = true
-		bar.Start()
-
-		reader := bar.NewProxyReader(resp.Body)
-
-		if _, err := io.Copy(f, reader); err != nil {
+		if err := os.MkdirAll(filepath.Join(root, "cache"), 0755); err != nil {
 			return err
 		}
 
-		bar.Finish()
+		if _, err := os.Stat(fName); err != nil {
+			println("file does not exist")
+			f, err = os.OpenFile(fName, os.O_RDWR|os.O_CREATE, 0755)
+			if err != nil {
+				return err
+			}
+
+			bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10)
+			bar.ShowSpeed = true
+			bar.Start()
+
+			reader := bar.NewProxyReader(resp.Body)
+
+			if _, err := io.Copy(f, reader); err != nil {
+				return err
+			}
+
+			bar.Finish()
+		} else {
+			println("File exists, not redownloading")
+			f, err = os.OpenFile(fName, os.O_RDWR|os.O_CREATE, 0755)
+			if err != nil {
+				return err
+			}
+			return err
+		}
 
 		return nil
 	}(); err != nil {
