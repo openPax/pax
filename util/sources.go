@@ -74,21 +74,27 @@ func FetchSourcesList(list map[string]string) ([]Source, error) {
 	var sources []Source
 
 	for _, d := range list {
-		resp, err := http.Get(d)
+		if err := func() error {
+			resp, err := http.Get(d)
 
-		if err != nil {
+			if err != nil {
+				return err
+			}
+
+			defer resp.Body.Close()
+
+			var source Source
+
+			if _, err := toml.DecodeReader(resp.Body, &source); err != nil {
+				return err
+			}
+
+			sources = append(sources, source)
+
+			return nil
+		}(); err != nil {
 			return nil, err
 		}
-
-		var source Source
-
-		if _, err := toml.DecodeReader(resp.Body, &source); err != nil {
-			return nil, err
-		}
-
-		resp.Body.Close()
-
-		sources = append(sources, source)
 	}
 
 	return sources, nil
