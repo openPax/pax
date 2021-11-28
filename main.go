@@ -45,6 +45,16 @@ func main() {
 						Value: true,
 						Usage: "Install Optional Dependencies",
 					},
+					&cli.StringFlag{
+						Name:  "cache",
+						Value: filepath.Join(usr.HomeDir, "/.apkg", "cache"),
+						Usage: "Set the cache directory",
+					},
+					&cli.BoolFlag{
+						Name:  "wipe-cache",
+						Value: false,
+						Usage: "Wipe the package cache",
+					},
 				},
 			},
 			{

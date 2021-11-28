@@ -26,7 +26,7 @@ func Upgrade(c *cli.Context) error {
 		if err != nil {
 			return err
 		}
-		
+
 		for k := range db.Packages {
 			deps, err := util.GetDepdendents(c.String("root"), k)
 			if err != nil {
@@ -34,7 +34,7 @@ func Upgrade(c *cli.Context) error {
 			}
 
 			if len(deps) == 0 {
-				packages = append(packages, k)	
+				packages = append(packages, k)
 			}
 		}
 	}
@@ -44,7 +44,7 @@ func Upgrade(c *cli.Context) error {
 	}
 
 	for _, v := range packages {
-		util.Upgrade(c.String("root"), v, !c.Bool("latest"))
+		util.Upgrade(c.String("root"), c.String("cache"), v, !c.Bool("latest"))
 	}
 
 	return nil

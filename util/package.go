@@ -49,7 +49,7 @@ func IsResolved(resolved map[string]ResolvedPackage, name, constraint string) (b
 	return true, nil
 }
 
-func ResolveNeeded(root string, sources []Source, pkg string, installOptional bool, state map[string]ResolvedPackage, stateLock *sync.Mutex, group *errgroup.Group) {
+func ResolveNeeded(root string, cache string, sources []Source, pkg string, installOptional bool, state map[string]ResolvedPackage, stateLock *sync.Mutex, group *errgroup.Group) {
 	group.Go(func() error {
 		parsed := strings.Split(pkg, "@")
 		name := parsed[0]
@@ -125,7 +125,7 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 
 		var f *os.File
 
-		var fName = filepath.Join(root, "cache", name+version+".apkg")
+		var fName = filepath.Join(cache, name+version+".apkg")
 
 		var sourceSize int64
 
@@ -147,7 +147,7 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 
 			sourceSize = int64(i)
 
-			if err := os.MkdirAll(filepath.Join(root, "cache"), 0755); err != nil {
+			if err := os.MkdirAll(cache, 0755); err != nil {
 				return err
 			}
 
@@ -189,12 +189,12 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 		}
 
 		for _, dep := range pkgRoot.Dependencies.Required {
-			ResolveNeeded(root, sources, dep, installOptional, state, stateLock, group)
+			ResolveNeeded(root, cache, sources, dep, installOptional, state, stateLock, group)
 		}
 
 		if installOptional {
 			for _, dep := range pkgRoot.Dependencies.Optional {
-				ResolveNeeded(root, sources, dep, installOptional, state, stateLock, group)
+				ResolveNeeded(root, cache, sources, dep, installOptional, state, stateLock, group)
 			}
 		}
 
@@ -219,7 +219,7 @@ func ResolveNeeded(root string, sources []Source, pkg string, installOptional bo
 	})
 }
 
-func InstallMultiple(root string, packages []string, installOptional bool) error {
+func InstallMultiple(root string, cache string, packages []string, installOptional bool) error {
 	list, err := ReadReposList(root)
 	if err != nil {
 		return err
@@ -237,7 +237,7 @@ func InstallMultiple(root string, packages []string, installOptional bool) error
 	for _, pkg := range packages {
 		pkg := pkg
 
-		ResolveNeeded(root, sources, pkg, installOptional, resolved, &resolvedLock, group)
+		ResolveNeeded(root, cache, sources, pkg, installOptional, resolved, &resolvedLock, group)
 	}
 
 	if err := group.Wait(); err != nil {
@@ -263,7 +263,7 @@ func InstallMultiple(root string, packages []string, installOptional bool) error
 	return nil
 }
 
-func Install(root string, name string, version string, installOptional bool) error {
+func Install(root string, cache string, name string, version string, installOptional bool) error {
 	list, err := ReadReposList(root)
 	if err != nil {
 		return err
@@ -347,9 +347,9 @@ func Install(root string, name string, version string, installOptional bool) err
 
 		sourceSize = int64(i)
 
-		var fName = filepath.Join(root, "cache", name+version+".apkg")
+		var fName = filepath.Join(cache, name+version+".apkg")
 
-		if err := os.MkdirAll(filepath.Join(root, "cache"), 0755); err != nil {
+		if err := os.MkdirAll(cache, 0755); err != nil {
 			return err
 		}
 
@@ -393,11 +393,11 @@ func Install(root string, name string, version string, installOptional bool) err
 	for _, dep := range pkgRoot.Dependencies.Required {
 		parsed := strings.Split(dep, "@")
 		if len(parsed) == 1 {
-			if err := Install(root, parsed[0], "", installOptional); err != nil {
+			if err := Install(root, cache, parsed[0], "", installOptional); err != nil {
 				return err
 			}
 		} else {
-			if err := Install(root, parsed[0], parsed[1], installOptional); err != nil {
+			if err := Install(root, cache, parsed[0], parsed[1], installOptional); err != nil {
 				return err
 			}
 		}
@@ -407,11 +407,11 @@ func Install(root string, name string, version string, installOptional bool) err
 		for _, dep := range pkgRoot.Dependencies.Optional {
 			parsed := strings.Split(dep, "@")
 			if len(parsed) == 1 {
-				if err := Install(root, parsed[0], "", installOptional); err != nil {
+				if err := Install(root, cache, parsed[0], "", installOptional); err != nil {
 					return err
 				}
 			} else {
-				if err := Install(root, parsed[0], parsed[1], installOptional); err != nil {
+				if err := Install(root, cache, parsed[0], parsed[1], installOptional); err != nil {
 					return err
 				}
 			}
@@ -578,7 +578,7 @@ func Remove(root, name string) error {
 	return nil
 }
 
-func Upgrade(root, name string, sv bool) error {
+func Upgrade(root, cache string, name string, sv bool) error {
 	db, err := apkg.ReadDatabase(root)
 
 	if err != nil {
@@ -680,21 +680,21 @@ func Upgrade(root, name string, sv bool) error {
 			return err
 		}
 
-		if err := Install(root, name, chosen, false); err != nil {
+		if err := Install(root, cache, name, chosen, false); err != nil {
 			return err
 		}
 	}
 
 	for _, v := range db.Packages[name].Dependencies.Required {
 		parsed := strings.Split(v, "@")
-		if err := Upgrade(root, parsed[0], sv); err != nil {
+		if err := Upgrade(root, cache, parsed[0], sv); err != nil {
 			return err
 		}
 	}
 
 	for _, v := range db.Packages[name].Dependencies.Optional {
 		parsed := strings.Split(v, "@")
-		if err := Upgrade(root, parsed[0], sv); err != nil {
+		if err := Upgrade(root, cache, parsed[0], sv); err != nil {
 			return err
 		}
 	}

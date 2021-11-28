@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	apkg "github.com/innatical/apkg/v2/util"
 	"github.com/innatical/pax/v2/util"
 	"github.com/urfave/cli/v2"
@@ -19,7 +21,16 @@ func Install(c *cli.Context) error {
 
 	defer util.UnlockDatabase(c.String("root"))
 
-	if err := util.InstallMultiple(c.String("root"), c.Args().Slice(), c.Bool("optional")); err != nil {
+	// Check for cache
+	if c.String("wipe-cache") == "true" {
+		println("Wiping cache...")
+		err := os.RemoveAll(c.String("cache"))
+		if err != nil {
+			return err
+		}
+	}
+
+	if err := util.InstallMultiple(c.String("root"), c.String("cache"), c.Args().Slice(), c.Bool("optional")); err != nil {
 		return err
 	}
 
