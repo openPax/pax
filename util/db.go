@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
-	apkg "github.com/innatical/apkg/v2/util"
+	apkg "github.com/innatical/apkg/v3/util"
 )
 
 type Database struct {
