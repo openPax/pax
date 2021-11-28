@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/charmbracelet/lipgloss"
-	apkg "github.com/innatical/apkg/v3/util"
-	"github.com/innatical/pax/v2/util"
+	apkg "github.com/innatical/apkg/v2/util"
+	"github.com/innatical/pax/v3/util"
 	"github.com/urfave/cli/v2"
 )
 

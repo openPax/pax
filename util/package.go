@@ -15,7 +15,7 @@ import (
 	"github.com/Masterminds/semver"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/cheggaaa/pb"
-	apkg "github.com/innatical/apkg/v3/util"
+	apkg "github.com/innatical/apkg/v2/util"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )

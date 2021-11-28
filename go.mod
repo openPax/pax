@@ -6,7 +6,7 @@ require (
 	github.com/BurntSushi/toml v0.4.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/charmbracelet/lipgloss v0.4.0
-	github.com/innatical/apkg/v3 v2.0.18
+	github.com/innatical/apkg/v2 v2.0.18
 	github.com/urfave/cli/v2 v2.3.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 )

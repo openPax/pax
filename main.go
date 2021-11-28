@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/innatical/pax/v2/cmd"
+	"github.com/innatical/pax/v3/cmd"
 
 	"github.com/urfave/cli/v2"
 )
