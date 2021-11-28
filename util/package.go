@@ -27,6 +27,8 @@ type ResolvedPackage struct {
 
 var downloadSemaphore = semaphore.NewWeighted(5)
 
+var barPool = pb.NewPool()
+
 func IsResolved(resolved map[string]ResolvedPackage, name, constraint string) (bool, error) {
 	if _, ok := resolved[name]; !ok {
 		return false, nil
@@ -152,15 +154,14 @@ func ResolveNeeded(root string, cache string, sources []Source, pkg string, inst
 			}
 
 			if _, err := os.Stat(fName); err != nil {
-				println("file does not exist")
 				f, err = os.OpenFile(fName, os.O_RDWR|os.O_CREATE, 0755)
 				if err != nil {
 					return err
 				}
 
-				bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10)
+				bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10).Prefix(lipgloss.NewStyle().Bold(true).Render(name))
 				bar.ShowSpeed = true
-				bar.Start()
+				barPool.Add(bar)
 
 				reader := bar.NewProxyReader(resp.Body)
 
@@ -238,7 +239,9 @@ func InstallMultiple(root string, cache string, packages []string, installOption
 		pkg := pkg
 
 		ResolveNeeded(root, cache, sources, pkg, installOptional, resolved, &resolvedLock, group)
+		barPool.Start()
 	}
+	barPool.Stop()
 
 	if err := group.Wait(); err != nil {
 		resolvedLock.Lock()
@@ -354,15 +357,14 @@ func Install(root string, cache string, name string, version string, installOpti
 		}
 
 		if _, err := os.Stat(fName); err != nil {
-			println("file does not exist")
 			f, err = os.OpenFile(fName, os.O_RDWR|os.O_CREATE, 0755)
 			if err != nil {
 				return err
 			}
 
-			bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10)
+			bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10).Prefix(lipgloss.NewStyle().Bold(true).Render(name))
 			bar.ShowSpeed = true
-			bar.Start()
+			barPool.Add(bar)
 
 			reader := bar.NewProxyReader(resp.Body)
 
