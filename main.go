@@ -31,6 +31,11 @@ func main() {
 				Value: filepath.Join(usr.HomeDir, "/.apkg"),
 				Usage: "The Root Directory for the apkg Package Backend",
 			},
+			&cli.StringFlag{
+				Name:  "cache",
+				Value: filepath.Join(usr.HomeDir, "/.apkg", "cache"),
+				Usage: "Set the cache directory",
+			},
 		},
 		Commands: []*cli.Command{
 			{
@@ -44,11 +49,6 @@ func main() {
 						Name:  "optional",
 						Value: true,
 						Usage: "Install Optional Dependencies",
-					},
-					&cli.StringFlag{
-						Name:  "cache",
-						Value: filepath.Join(usr.HomeDir, "/.apkg", "cache"),
-						Usage: "Set the cache directory",
 					},
 					&cli.BoolFlag{
 						Name:  "wipe-cache",
