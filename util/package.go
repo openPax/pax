@@ -14,8 +14,8 @@ import (
 
 	"github.com/Masterminds/semver"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/cheggaaa/pb"
 	apkg "github.com/innatical/apkg/v2/util"
+	"github.com/innatical/pb/v3"
 	"golang.org/x/sync/errgroup"
 	"golang.org/x/sync/semaphore"
 )
@@ -159,8 +159,10 @@ func ResolveNeeded(root string, cache string, sources []Source, pkg string, inst
 					return err
 				}
 
-				bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10).Prefix(lipgloss.NewStyle().Bold(true).Render(name))
-				bar.ShowSpeed = true
+				bar := pb.New(int(sourceSize)).Set(pb.Bytes, true).SetRefreshRate(time.Millisecond * 10).SetTemplateString(`{{string . "prefix"}} {{counters .}} {{bar .}} {{percent .}} {{speed .}}`).Set("prefix", lipgloss.NewStyle().Bold(true).Render(name))
+				if err := bar.Err(); err != nil {
+  			  return err
+				}
 				barPool.Add(bar)
 
 				reader := bar.NewProxyReader(resp.Body)
@@ -239,19 +241,20 @@ func InstallMultiple(root string, cache string, packages []string, installOption
 		pkg := pkg
 
 		ResolveNeeded(root, cache, sources, pkg, installOptional, resolved, &resolvedLock, group)
-		barPool.Start()
 	}
-	barPool.Stop()
-
+	barPool.Start()
+	
 	if err := group.Wait(); err != nil {
+		barPool.Stop()
 		resolvedLock.Lock()
 		for _, res := range resolved {
 			os.Remove(res.File)
 		}
 		resolvedLock.Unlock()
-
+		
 		return err
 	}
+	barPool.Stop()
 
 	var files []string
 
@@ -362,8 +365,10 @@ func Install(root string, cache string, name string, version string, installOpti
 				return err
 			}
 
-			bar := pb.New(int(sourceSize)).SetUnits(pb.U_BYTES).SetRefreshRate(time.Millisecond * 10).Prefix(lipgloss.NewStyle().Bold(true).Render(name))
-			bar.ShowSpeed = true
+			bar := pb.New(int(sourceSize)).Set(pb.Bytes, true).SetRefreshRate(time.Millisecond * 10).SetTemplateString(`{{string . "prefix"}} {{counters .}} {{bar .}} {{percent .}} {{speed .}}`).Set("prefix", lipgloss.NewStyle().Bold(true).Render(name))
+			if err := bar.Err(); err != nil {
+  			return err
+			}
 			barPool.Add(bar)
 
 			reader := bar.NewProxyReader(resp.Body)
